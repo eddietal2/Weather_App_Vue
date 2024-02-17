@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 // Import Swiper styles
 import 'swiper/css';
 
+// Swiper
 function onSwiper(swiper: any) {
       console.log(swiper);
 }
@@ -38,6 +39,7 @@ function toTokyo() {
   getWeatherTokyo();
 }
 
+// Forecast
 var sevenDayForecast = ref([]);
 function getWeatherDetroit() {
   // Clear Weather data to restart animation
@@ -85,6 +87,7 @@ function getWeatherTokyo() {
   });
 }
 
+// Lifecycle Hooks
 onMounted(() => {
   getWeatherDetroit()
 })
@@ -93,10 +96,11 @@ onMounted(() => {
 <template>
   <ion-grid :class="{ picdet: isDet, picsa: isSA, pictoyko: isToyko }" class="bg-base">
     <ion-row class="ion-justify-content-center">
-      <!-- <ion-col class="ion-text-left message" size="5">
-        <h1>Goodmorning!</h1>
-      </ion-col> -->
-      <ion-col class="toolbar ion-text-right ion-hide-sm-down" size="11">
+      <ion-col class="v-logo" size-lg="5.5" size="12">
+        <img src="./assets/logo.svg" alt="Vue Logo" height="60">
+        <span id="logo-text">WEATHER</span>
+      </ion-col>
+      <ion-col class="toolbar ion-text-right ion-hide-sm-down" size="5.5">
         <ion-button :class="isDet ? 'active' : 'inactive'" @click="toDet()">Detroit</ion-button>
         <ion-button :class="isSA ? 'active' : 'inactive'" @click="toSA()">South Africa</ion-button>
         <ion-button :class="isToyko ? 'active' : 'inactive'" @click="toTokyo()">Japan</ion-button>
@@ -124,7 +128,7 @@ onMounted(() => {
         <span class="forecast-avg-temp">{{ Math.round(day['temp']) }}</span><br>
         <span class="forecast-high-temp">High - {{ Math.round(day['temp']) }}</span><br>
         <span class="forecast-low-temp">Low - {{ Math.round(day['temp']) }}</span>
-      </ion-col>s
+      </ion-col>
     </ion-row>
     <ion-row id="forecast-wrapper-mb" class="ion-justify-content-center ion-align-items-end ion-hide-sm-up">
       <swiper
@@ -147,11 +151,23 @@ onMounted(() => {
 
 <style scoped>
 /* Toolbar */
+.v-logo {
+  display: flex;
+  align-items: center;
+  font-size: 1em;
+  text-transform: capitalize;
+}
+#logo-text{
+  color: #fff;
+}
 .toolbar ion-button {
-  width: 7.5rem;
+  width: 6.4rem;
+  height: 1rem;
   font-size: 0.7em;
-  margin: 0 0.5em;
+  margin: 0 0.2em;
   transition: 0.5s;
+  --border-radius: 0px;
+  --box-shadow: none;
 }
 .toolbar-mb {
   display: flex;
@@ -169,16 +185,13 @@ onMounted(() => {
   margin: 0 0.5em;
   transition: 0.5s;
 }
-/* .message {
-  background: #ffffff81;
-} */
 .active {
-  --background: #022a86;
+  --background: linear-gradient(135deg, #41b883 0%, #0b9c5b 100%);
   color: #fff;
 }
 .inactive {
 
-  --background: #555;
+  --background: #9999997d;
   color: #fff;
 }
 
@@ -229,7 +242,7 @@ onMounted(() => {
     opacity: 0;
   }
   100% {
-    transform: translateY(0px);
+    transform: translateY(-50px);
     opacity: 1;
   }
 }
