@@ -10,34 +10,67 @@ function toDet() {
   isDet.value = true;
   isSA.value = false;
   isToyko.value = false;
+
+  getWeatherDetroit();
 }
 function toSA() {
   isDet.value = false;
   isSA.value = true;
   isToyko.value = false;
+
+  getWeatherCapeTown();
 }
 function toTokyo() {
   isDet.value = false;
   isSA.value = false;
   isToyko.value = true;
+
+  getWeatherTokyo();
 }
 
 var sevenDayForecast = ref([]);
-function getWeather() {
-  // Calculating the size and position of wrapper and forecast information
-  const forecastWrapper = document.getElementById("forecast-wrapper")!;
-  const distanceToBottom = window.innerHeight - forecastWrapper.getBoundingClientRect().bottom;
-  console.log(distanceToBottom);
-  forecastWrapper.style.height = distanceToBottom+"px";
+const weatherIconLink = "https://www.weatherbit.io/static/img/icons/c01d.png";
 
+function getWeatherDetroit() {
+  // Clear Weather data to restart animation
+  sevenDayForecast.value = [];
   // Getting Weather Data
-  fetch("https://api.weatherbit.io/v2.0/forecast/daily?city=Detroit,MI&key=354bd7f3d59c482dbbabdc15c07be71d")
+  fetch("https://api.weatherbit.io/v2.0/forecast/daily?city=Detroit,MI&key=354bd7f3d59c482dbbabdc15c07be71d&units=I")
+  .then(response => response.json())
+  .then(data => {
+    // Access and process the HTML data returned by the API
+    console.log(data.data.slice(0,7));
+    sevenDayForecast.value = data.data.slice(0,7);   
+  })
+  .catch(error => {
+    console.error("Error fetching data:", error);
+  });
+}
+function getWeatherCapeTown() {
+  // Clear Weather data to restart animation
+  sevenDayForecast.value = [];
+  // Getting Weather Data for Cape Town
+  fetch("https://api.weatherbit.io/v2.0/forecast/daily?&lat=-33.9249&lon=18.4241&key=354bd7f3d59c482dbbabdc15c07be71d&units=I")
   .then(response => response.json())
   .then(data => {
     // Access and process the HTML data returned by the API
     console.log(data.data.slice(0,7));
     sevenDayForecast.value = data.data.slice(0,7);
-    
+  })
+  .catch(error => {
+    console.error("Error fetching data:", error);
+  });
+}
+function getWeatherTokyo() {
+  // Clear Weather data to restart animation
+  sevenDayForecast.value = [];
+  // Getting Weather Data
+  fetch("https://api.weatherbit.io/v2.0/forecast/daily?&lat=35.6764&lon=139.6500&key=354bd7f3d59c482dbbabdc15c07be71d&units=I")
+  .then(response => response.json())
+  .then(data => {
+    // Access and process the HTML data returned by the API
+    console.log(data.data.slice(0,7));
+    sevenDayForecast.value = data.data.slice(0,7);    
   })
   .catch(error => {
     console.error("Error fetching data:", error);
@@ -45,7 +78,7 @@ function getWeather() {
 }
 
 onMounted(() => {
-  getWeather()
+  getWeatherDetroit()
 })
 </script>
 
@@ -62,8 +95,22 @@ onMounted(() => {
       </ion-col>
     </ion-row>
     <ion-row id="forecast-wrapper" class="ion-justify-content-center ion-align-items-end">
-      <ion-col v-for="(day, index) in sevenDayForecast" :key="index" class="f-day" size="1.4">
-        {{ day['datetime'] }}
+      <!-- <ion-col size="10">
+        <h1>Forecast</h1>
+      </ion-col> -->
+      <ion-col 
+        class="f-day" 
+        size="1.4" 
+        :ref="(el: any) => {console.log(el)}" 
+        :key="index"
+        v-for="(day, index) in sevenDayForecast" 
+        >
+        <span class="forecast-date">{{ (day['datetime'] as string).substring(5).replace(/-/g, "/") }}</span><br>
+        <img :src="`https://www.weatherbit.io/static/img/icons/${day['weather']['icon']}.png`" alt="Weather Icon" height="70">
+        <br>
+        <span class="forecast-avg-temp">{{ Math.round(day['temp']) }}</span><br>
+        <span class="forecast-high-temp">High - {{ Math.round(day['temp']) }}</span><br>
+        <span class="forecast-low-temp">Low - {{ Math.round(day['temp']) }}</span>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -95,25 +142,52 @@ onMounted(() => {
   color: #fff;
 }
 #forecast-wrapper {
-  height: auto;
-  background: #ae0303ad;
+  height: 90vh;
+  /* background: #001219ad; */
   /* margin-top: 35%; */
 }
+.forecast-date{
+  font-size: 0.8em;
+}
+.forecast-avg-temp {
+  font-size: 2em;
+}
+.forecast-high-temp, .forecast-low-temp  {
+  font-size: 1em;
+}
 .f-day {
-  height: 100px;
+  height: auto;
+  border-radius: 10px;
+  padding: 0.5em;
   margin: 0 0.5em;
-  background: #ccc;
+  background: #fff;
+  opacity: 0;
+  animation: slide-forecast-day-up 0.5s ease 0.2s forwards
 }
 .picdet {
-  background-image: url('../src/assets/images/detroit_weather.jpeg');
+  background: 
+    linear-gradient(
+      165deg,
+    #00000000 40%, 
+    #000000), 
+    url('../src/assets/images/detroit_weather.jpeg');
+  opacity: 0;
   animation: fade-bg-in 0.5s ease forwards;
 }
 .picsa {
-  background-image: url('../src/assets/images/southafrica_weather.jpeg');
+  background-image: 
+    linear-gradient(
+      165deg,
+    #00000000 40%, 
+    #000000), url('../src/assets/images/southafrica_weather.jpeg');
   animation: fade-bg-in 0.5s ease forwards;
 }
 .pictoyko {
-  background-image: url('../src/assets/images/tokyo_weather.jpeg');
+  background-image: 
+    linear-gradient(
+      165deg,
+    #00000000 40%, 
+    #000000), url('../src/assets/images/tokyo_weather.jpeg');
   animation: fade-bg-in 0.5s ease forwards;
 }
 @keyframes fade-bg-in {
@@ -124,9 +198,14 @@ onMounted(() => {
     opacity: 1;
   }
 }
-.weather-data {
-  background: #ccc;
-  height: 100px;
-  width: 80%;
+@keyframes slide-forecast-day-up {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
 }
 </style>
