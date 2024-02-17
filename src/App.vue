@@ -16,7 +16,9 @@ function onSlideChange() {
 var isDet = ref(true);
 var isSA = ref(false);
 var isToyko = ref(false);
-
+function goToWeatherBit() {
+  window.open('https://www.weatherbit.io/', '_blank');
+}
 function toDet() {
   isDet.value = true;
   isSA.value = false;
@@ -95,12 +97,16 @@ onMounted(() => {
 
 <template>
   <ion-grid :class="{ picdet: isDet, picsa: isSA, pictoyko: isToyko }" class="bg-base">
-    <ion-row class="ion-justify-content-center">
-      <ion-col class="v-logo" size-lg="5.5" size="12">
-        <img src="./assets/logo.svg" alt="Vue Logo" height="60">
-        <span id="logo-text">WEATHER</span>
+    <ion-row class="ion-justify-content-center ion-align-items-center">
+      <ion-col class="v-logo ion-text-left" size-lg="5.5" size="12">
+        <!-- <img src="./assets/logo.svg" alt="Vue Logo" height="60"> -->
+        <span @click="goToWeatherBit()" class="powered-by">
+          <b style="color: gold">Powered by</b>
+          <span style="width: 10px"></span>
+          <img height="20" src="https://cdn.weatherbit.io/static/img/logos/weatherbit/color/svg/logo-no-background.svg" alt="Weatherbit Logo">
+        </span>
       </ion-col>
-      <ion-col class="toolbar ion-text-right ion-hide-sm-down" size="5.5">
+      <ion-col class="toolbar ion-text-right ion-hide-sm-down" size-lg="5.5">
         <ion-button :class="isDet ? 'active' : 'inactive'" @click="toDet()">Detroit</ion-button>
         <ion-button :class="isSA ? 'active' : 'inactive'" @click="toSA()">South Africa</ion-button>
         <ion-button :class="isToyko ? 'active' : 'inactive'" @click="toTokyo()">Japan</ion-button>
@@ -130,7 +136,7 @@ onMounted(() => {
         <span class="forecast-low-temp">Low - {{ Math.round(day['temp']) }}</span>
       </ion-col>
     </ion-row>
-    <ion-row id="forecast-wrapper-mb" class="ion-justify-content-center ion-align-items-end ion-hide-sm-up">
+    <ion-row id="forecast-wrapper-mb" class="ion-hide-sm-up">
       <swiper
         :slides-per-view="2.2"
         :space-between="10"
@@ -155,11 +161,11 @@ onMounted(() => {
   display: flex;
   align-items: center;
   font-size: 1em;
-  text-transform: capitalize;
 }
 #logo-text{
   color: #fff;
 }
+
 .toolbar ion-button {
   width: 6.4rem;
   height: 1rem;
@@ -176,11 +182,11 @@ onMounted(() => {
   position: absolute;
   bottom: 0;
   z-index: 99;
-  background: #ffffff78;
+  background: #ffffffcb;
   height: 4em;
 }
 .toolbar-mb ion-button{
-  width: 7.5rem;
+  width: 8.5rem;
   font-size: 0.9em;
   margin: 0 0.5em;
   transition: 0.5s;
@@ -194,7 +200,16 @@ onMounted(() => {
   --background: #9999997d;
   color: #fff;
 }
-
+.powered-by {
+  color: #fff; 
+  background: #222; 
+  padding: 0.6em;
+  width: auto;
+  height: auto;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+}
 /* Forecast */
 #forecast-wrapper {
   height: 90vh;
@@ -314,6 +329,7 @@ onMounted(() => {
       #00000000 40%, 
       #000000), 
       url('../src/assets/images/tokyo_mb.png');
+    background-position-x: -100px;
   }
 }
 </style>
