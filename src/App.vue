@@ -220,7 +220,7 @@ onMounted(() => {
         <span class="forecast-date">{{ (day['datetime'] as string).substring(5).replace(/-/g, "/") }}</span><br>
         <img :src="`https://www.weatherbit.io/static/img/icons/${day['weather']['icon']}.png`" alt="Weather Icon" height="70">
         <br>
-        <span class="forecast-avg-temp">{{ Math.round(day['temp']) }}</span><br>
+        <span class="forecast-avg-temp">{{ Math.round(day['temp']) }}</span><span style="font-size: 24px; line-height: 24px; position: relative; bottom: 5px;">&deg;</span><br>
         <span class="forecast-high-temp">Hi - {{ Math.round(day['high_temp']) }}</span><br>
         <span class="forecast-low-temp">Lo - {{ Math.round(day['low_temp']) }}</span>
       </ion-col>
