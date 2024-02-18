@@ -16,6 +16,7 @@ function onSlideChange() {
 var isDet = ref(true);
 var isSA = ref(false);
 var isToyko = ref(false);
+var currentLocation = 'det';
 function goToWeatherBit() {
   window.open('https://www.weatherbit.io/', '_blank');
 }
@@ -31,7 +32,7 @@ function toSA() {
   isSA.value = true;
   isToyko.value = false;
 
-  getWeatherCapeTown();
+  getWeatherSA();
 }
 function toTokyo() {
   isDet.value = false;
@@ -44,6 +45,15 @@ function toTokyo() {
 // Forecast
 var sevenDayForecast = ref([]);
 function getWeatherDetroit() {
+  // Set Current Location to Detroit
+  currentLocation = 'det';
+  getTime(currentLocation);
+
+  // Time Clock Slide In Animation
+  var timeClockWrapper = document.getElementById("clock-wrapper") as HTMLElement;
+  
+  console.log(timeClockWrapper);
+
   // Clear Weather data to restart animation
   sevenDayForecast.value = [];
   // Getting Weather Data
@@ -51,14 +61,23 @@ function getWeatherDetroit() {
   .then(response => response.json())
   .then(data => {
     // Access and process the HTML data returned by the API
-    console.log(data.data.slice(0,7));
+    // console.log(data.data.slice(0,7));
     sevenDayForecast.value = data.data.slice(0,7);   
   })
   .catch(error => {
     console.error("Error fetching data:", error);
   });
 }
-function getWeatherCapeTown() {
+function getWeatherSA() {
+  // Set Current Location to South Africa
+  currentLocation = 'sa';
+  getTime(currentLocation);
+
+  // Time Clock Slide In Animation
+  const timeClockElement = document.getElementById("timeclock") as HTMLDivElement;
+
+  console.log(timeClockElement);
+
   // Clear Weather data to restart animation
   sevenDayForecast.value = [];
   // Getting Weather Data for Cape Town
@@ -66,7 +85,7 @@ function getWeatherCapeTown() {
   .then(response => response.json())
   .then(data => {
     // Access and process the HTML data returned by the API
-    console.log(data.data.slice(0,7));
+    // console.log(data.data.slice(0,7));
     sevenDayForecast.value = data.data.slice(0,7);
   })
   .catch(error => {
@@ -74,6 +93,10 @@ function getWeatherCapeTown() {
   });
 }
 function getWeatherTokyo() {
+  // Set Current Location to Tokyo
+  currentLocation = 'tokyo';
+  getTime(currentLocation);
+
   // Clear Weather data to restart animation
   sevenDayForecast.value = [];
   // Getting Weather Data
@@ -89,22 +112,88 @@ function getWeatherTokyo() {
   });
 }
 
+// Time
+var currentTime = ref('');
+var currentDate = ref('');
+var detInterval = ref();
+var saInterval = ref();
+var tokyoInterval = ref();
+var clock = ref();
+
+function getTime(location: string) {
+  clearInterval(detInterval.value);
+  clearInterval(saInterval.value);
+  clearInterval(tokyoInterval.value);
+  if(location == 'det') {
+    detInterval.value = setInterval(
+      () => {
+        // console.log('Getting Detroit Time');
+        fetch('http://worldtimeapi.org/api/timezone/America/Detroit')
+          .then(response => response.json())
+          .then(data => {
+            const dateObject = new Date(data.datetime); 
+            const formattedDate = dateObject.toLocaleDateString('en-US');
+            const formattedTime = dateObject.toLocaleString('en-US', { timeZone: 'America/Detroit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            currentTime.value = formattedTime;
+            currentDate.value = formattedDate;
+            return;
+          })
+      }, 1000
+    );
+  }
+  if(location == 'sa') {
+    saInterval.value = setInterval(
+      () => {
+        // console.log('Getting Africa Time');
+        fetch('http://worldtimeapi.org/api/timezone/Africa/Johannesburg')
+          .then(response => response.json())
+          .then(data => {
+            const dateObject = new Date(data.datetime); 
+            const formattedDate = dateObject.toLocaleDateString('en-US', {timeZone: 'Africa/Johannesburg'});
+            const formattedTime = dateObject.toLocaleString('en-US', { timeZone: 'Africa/Johannesburg', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            currentTime.value = formattedTime;
+            currentDate.value = formattedDate;
+            return;
+          })
+      }, 1000
+    );
+  }
+  if(location == 'tokyo') {
+    tokyoInterval.value = setInterval(
+      () => {
+        // console.log('Getting Tokyo Time');
+        fetch('http://worldtimeapi.org/api/timezone/Asia/Tokyo')
+          .then(response => response.json())
+          .then(data => {
+            const dateObject = new Date(data.datetime); 
+            const formattedDate = dateObject.toLocaleDateString('en-US', {timeZone: 'Asia/Tokyo'});
+            const formattedTime = dateObject.toLocaleString('en-US', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            currentTime.value = formattedTime;
+            currentDate.value = formattedDate;
+            return;
+          })
+      }, 1000
+    );
+  }
+}
+
 // Lifecycle Hooks
 onMounted(() => {
-  getWeatherDetroit()
+  // To Remove all the warning messages before use of the app (temporary)
+  console.clear();
+  getWeatherDetroit();
+  getTime(currentLocation);
+  
 })
 </script>
 
 <template>
   <ion-grid :class="{ picdet: isDet, picsa: isSA, pictoyko: isToyko }" class="bg-base">
+    <!-- Toolbars -->
     <ion-row class="ion-justify-content-center ion-align-items-center">
-      <ion-col class="v-logo ion-text-left" size-lg="5.5" size="12">
-        <!-- <img src="./assets/logo.svg" alt="Vue Logo" height="60"> -->
-        <span @click="goToWeatherBit()" class="powered-by">
-          <b style="color: gold">Powered by</b>
-          <span style="width: 10px"></span>
-          <img height="20" src="https://cdn.weatherbit.io/static/img/logos/weatherbit/color/svg/logo-no-background.svg" alt="Weatherbit Logo">
-        </span>
+      <ion-col :ref="clock" class="ion-text-left clock-wrapper" size-lg="5.5" size="12">
+          <p id="timeclock">{{ currentTime }}</p>
+          <p id="timedate">{{ currentDate }}</p>
       </ion-col>
       <ion-col class="toolbar ion-text-right ion-hide-sm-down" size-lg="5.5">
         <ion-button :class="isDet ? 'active' : 'inactive'" @click="toDet()">Detroit</ion-button>
@@ -117,14 +206,14 @@ onMounted(() => {
         <ion-button :class="isToyko ? 'active' : 'inactive'" @click="toTokyo()">Japan</ion-button>
       </ion-col>
     </ion-row>
+    <!-- Forecasts -->
     <ion-row id="forecast-wrapper" class="ion-justify-content-center ion-align-items-end ion-hide-sm-down">
-      <!-- <ion-col size="10">
-        <h1>Forecast</h1>
-      </ion-col> -->
+  
+      <!-- Laptop Forecast -->
       <ion-col 
         class="f-day ion-hide-sm-down" 
         size="1.4" 
-        :ref="(el: any) => {console.log(el)}" 
+        :ref="(el: any) => {}" 
         :key="index"
         v-for="(day, index) in sevenDayForecast" 
         >
@@ -132,10 +221,18 @@ onMounted(() => {
         <img :src="`https://www.weatherbit.io/static/img/icons/${day['weather']['icon']}.png`" alt="Weather Icon" height="70">
         <br>
         <span class="forecast-avg-temp">{{ Math.round(day['temp']) }}</span><br>
-        <span class="forecast-high-temp">High - {{ Math.round(day['temp']) }}</span><br>
-        <span class="forecast-low-temp">Low - {{ Math.round(day['temp']) }}</span>
+        <span class="forecast-high-temp">Hi - {{ Math.round(day['high_temp']) }}</span><br>
+        <span class="forecast-low-temp">Lo - {{ Math.round(day['low_temp']) }}</span>
       </ion-col>
+
+      <div @click="goToWeatherBit()" class="powered-by">
+          <b style="color: gold">Powered by</b>
+          <span style="width: 10px"></span>
+          <img height="20" src="https://cdn.weatherbit.io/static/img/logos/weatherbit/color/svg/logo-no-background.svg" alt="Weatherbit Logo">
+      </div>
     </ion-row>
+
+    <!-- Mobile Forecast -->
     <ion-row id="forecast-wrapper-mb" class="ion-hide-sm-up">
       <swiper
         :slides-per-view="2.2"
@@ -165,7 +262,35 @@ onMounted(() => {
 #logo-text{
   color: #fff;
 }
-
+#timeclock {
+  font-size: 2em;
+  background: #000d55;
+  color: #fff;
+  width: 200px;
+  text-align: center;
+  opacity: 0;
+  animation: clock-slide-left 0.5s ease 2s forwards;
+}
+#timedate {
+  font-size: 1em;
+  background: #fff;
+  width: 200px;
+  text-align: center;
+  position: relative;
+  top: 0.5em;
+  opacity: 0;
+  animation: clock-slide-left 0.5s ease 2.3s forwards;
+}
+@keyframes clock-slide-left {
+  0% {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+}
 .toolbar ion-button {
   width: 6.4rem;
   height: 1rem;
@@ -192,8 +317,9 @@ onMounted(() => {
   transition: 0.5s;
 }
 .active {
-  --background: linear-gradient(135deg, #41b883 0%, #0b9c5b 100%);
+  --background: linear-gradient(135deg, #e56f00 0%, #c35e00 100%);
   color: #fff;
+  font-weight: 600;
 }
 .inactive {
 
@@ -212,7 +338,7 @@ onMounted(() => {
 }
 /* Forecast */
 #forecast-wrapper {
-  height: 90vh;
+  height: 85vh;
   /* background: #001219ad; */
   /* margin-top: 35%; */
 }
@@ -226,12 +352,16 @@ onMounted(() => {
 }
 .forecast-date{
   font-size: 0.8em;
+  color: #e56f00;
+  font-weight: 600;
 }
 .forecast-avg-temp {
   font-size: 2em;
 }
 .forecast-high-temp, .forecast-low-temp  {
-  font-size: 1em;
+  font-size: 0.7em;
+  display: inline-block;
+  height: 0;
 }
 .f-day {
   height: auto;
@@ -240,7 +370,7 @@ onMounted(() => {
   margin: 0 0.5em;
   background: #fff;
   opacity: 0;
-  animation: slide-forecast-day-up 0.5s ease 0.2s forwards
+  animation: slide-forecast-day-up 0.5s ease 1s forwards
 }
 .f-day-mb {
   height: auto;
@@ -253,11 +383,11 @@ onMounted(() => {
 }
 @keyframes slide-forecast-day-up {
   0% {
-    transform: translateY(100px);
+    transform: translateY(300px);
     opacity: 0;
   }
   100% {
-    transform: translateY(-50px);
+    transform: translateY(150px);
     opacity: 1;
   }
 }
@@ -276,11 +406,11 @@ onMounted(() => {
 .bg-base {
   background-size: cover;
   background-repeat: no-repeat;
-  background-position-x: 20%;
   width: 100%;
   height: 100vh;
 }
 .picdet {
+  
   background: 
     linear-gradient(
       165deg,
@@ -294,15 +424,18 @@ onMounted(() => {
       165deg,
     #00000000 40%, 
     #000000), url('../src/assets/images/southafrica_weather.jpeg');
-  animation: fade-bg-in 0.5s ease forwards;
 }
 .pictoyko {
+  /* animation: moveBackground 10s linear forwards; */
   background-image: 
     linear-gradient(
       165deg,
     #00000000 40%, 
     #000000), url('../src/assets/images/tokyo_weather.jpeg');
-  animation: fade-bg-in 0.5s ease forwards;
+}
+@keyframes moveBackground {
+  0% { background-position-x: 0; }
+  100% { background-position-x: 100%; }
 }
 @media (max-width: 600px) {
   .picdet {
