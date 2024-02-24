@@ -1,6 +1,7 @@
 # Weather App
 
-This template should help get you started developing with Vue 3 in Vite.
+Here is the link:
+https://magical-sunflower-f839d8.netlify.app/
 
 # NGINX Setup Reference Link
 https://cloudkatha.com/how-to-install-nginx-on-amazon-linux-2023-instance/
