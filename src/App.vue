@@ -4,6 +4,19 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 // Import Swiper styles
 import 'swiper/css';
 
+// Ionic Local Register
+import { IonButton, IonCol, IonRow, IonGrid } from '@ionic/vue';
+  import { defineComponent } from 'vue';
+
+  defineComponent({
+    components: { 
+      IonButton,
+      IonCol, 
+      IonRow, 
+      IonGrid
+    },
+  });
+
 // Swiper
 function onSwiper(swiper: any) {
       console.log(swiper);
@@ -48,11 +61,6 @@ function getWeatherDetroit() {
   // Set Current Location to Detroit
   currentLocation = 'det';
   getTime(currentLocation);
-
-  // Time Clock Slide In Animation
-  var timeClockWrapper = document.getElementById("clock-wrapper") as HTMLElement;
-  
-  console.log(timeClockWrapper);
 
   // Clear Weather data to restart animation
   sevenDayForecast.value = [];
@@ -307,7 +315,7 @@ onMounted(() => {
   position: absolute;
   bottom: 0;
   z-index: 99;
-  background: #ffffffcb;
+  background: #002bd553;
   height: 4em;
 }
 .toolbar-mb ion-button{
@@ -323,7 +331,7 @@ onMounted(() => {
 }
 .inactive {
 
-  --background: #9999997d;
+  --background: #002bd553;
   color: #fff;
 }
 .powered-by {
@@ -415,15 +423,15 @@ onMounted(() => {
     linear-gradient(
       165deg,
     #00000000 40%, 
-    #000000), 
-    url('../src/assets/images/detroit_weather.jpeg');
+    #ffffff), 
+    url('../public//images/detroit_weather.jpeg');
 }
 .picsa {
   background-image: 
     linear-gradient(
       165deg,
     #00000000 40%, 
-    #000000), url('../src/assets/images/southafrica_weather.jpeg');
+    #ffffff), url('../public/images/southafrica_weather.jpeg');
 }
 .pictoyko {
   /* animation: moveBackground 10s linear forwards; */
@@ -431,11 +439,7 @@ onMounted(() => {
     linear-gradient(
       165deg,
     #00000000 40%, 
-    #000000), url('../src/assets/images/tokyo_weather.jpeg');
-}
-@keyframes moveBackground {
-  0% { background-position-x: 0; }
-  100% { background-position-x: 100%; }
+    #ffffff), url('../public/images/tokyo_weather.jpeg');
 }
 @media (max-width: 600px) {
   .picdet {
@@ -444,7 +448,7 @@ onMounted(() => {
         165deg,
       #00000000 40%, 
       #000000), 
-      url('../src/assets/images/det_mb.png');
+      url('../public/images/det_mb.png');
     background-position-x: -100px;
   }
   .picsa {
@@ -453,7 +457,7 @@ onMounted(() => {
         165deg,
       #00000000 40%, 
       #000000), 
-      url('../src/assets/images/sa_mb.png');
+      url('../public/images/sa_mb.png');
   }
   .pictoyko {
     background: 
@@ -461,7 +465,7 @@ onMounted(() => {
         165deg,
       #00000000 40%, 
       #000000), 
-      url('../src/assets/images/tokyo_mb.png');
+      url('../public/images/tokyo_mb.png');
     background-position-x: -100px;
   }
 }

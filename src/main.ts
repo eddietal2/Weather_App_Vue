@@ -17,11 +17,17 @@ import '@ionic/vue/css/display.css';
 
 import { IonicVue } from '@ionic/vue';
 
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
 const app = createApp(App).use(IonicVue).use(router);
+
+// Ionic Vue Global Component Registration
+// import { IonButton, IonCol, IonRow, IonGrid } from '@ionic/vue';
+// app.component('ion-button', IonButton);
+// app.component('ion-row', IonRow);
+// app.component('ion-col', IonCol);
+// app.component('ion-gird', IonGrid);
 
 router.isReady().then(() => {
     app.mount('#app');
