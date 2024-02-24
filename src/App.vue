@@ -136,7 +136,7 @@ function getTime(location: string) {
     detInterval.value = setInterval(
       () => {
         // console.log('Getting Detroit Time');
-        fetch('http://worldtimeapi.org/api/timezone/America/Detroit')
+        fetch('https://worldtimeapi.org/api/timezone/America/Detroit')
           .then(response => response.json())
           .then(data => {
             const dateObject = new Date(data.datetime); 
@@ -153,7 +153,7 @@ function getTime(location: string) {
     saInterval.value = setInterval(
       () => {
         // console.log('Getting Africa Time');
-        fetch('http://worldtimeapi.org/api/timezone/Africa/Johannesburg')
+        fetch('https://worldtimeapi.org/api/timezone/Africa/Johannesburg')
           .then(response => response.json())
           .then(data => {
             const dateObject = new Date(data.datetime); 
@@ -170,7 +170,7 @@ function getTime(location: string) {
     tokyoInterval.value = setInterval(
       () => {
         // console.log('Getting Tokyo Time');
-        fetch('http://worldtimeapi.org/api/timezone/Asia/Tokyo')
+        fetch('https://worldtimeapi.org/api/timezone/Asia/Tokyo')
           .then(response => response.json())
           .then(data => {
             const dateObject = new Date(data.datetime); 
